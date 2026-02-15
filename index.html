@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Diamond Tracker Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<button class="theme-toggle" onclick="cycleTheme()" aria-label="Change Theme">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+    </svg>
+</button>
+
+<div class="timer-container" onclick="toggleTimer()" aria-label="Game Timer">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+    </svg>
+    <span id="timer-display">00:00:00</span>
+</div>
+
+<button class="share-toggle" onclick="shareGame()" aria-label="Share Game">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/>
+    </svg>
+</button>
+
+<div class="app-container">
+    <div class="header glass">
+        <div class="inning-container">
+            <div id="inning-text" class="inning-display">
+                <span id="inning-half">TOP</span> <span id="inning-num">1</span>
+            </div>
+        </div>
+        <div class="inning-nav">
+            <button class="nav-btn" onclick="changeInning(-1)">←</button>
+            <button class="nav-btn" onclick="changeInning(1)">→</button>
+        </div>
+    </div>
+
+    <div class="score-grid">
+        <div class="team-card glass" id="away-card">
+            <span class="label" id="away-label">AWAY</span>
+            <div class="goo-zone away-filter">
+                <div id="away-score" class="score-display">0</div>
+            </div>
+            <div class="controls">
+                <button class="m-btn" onclick="updateScore('away', -1)">−</button>
+                <button class="p-btn" onclick="updateScore('away', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="team-card glass" id="home-card">
+            <span class="label" id="home-label">HOME</span>
+            <div class="goo-zone home-filter">
+                <div id="home-score" class="score-display">0</div>
+            </div>
+            <div class="controls">
+                <button class="m-btn" onclick="updateScore('home', -1)">−</button>
+                <button class="p-btn" onclick="updateScore('home', 1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-pitch-area" class="glass pitch-main-card hidden">
+        <div id="main-ui-simple" class="hidden">
+            <div class="main-pitch-row">
+                <span class="label">PITCHES</span>
+                <div class="pitch-goo-zone pitch-filter">
+                   <span id="main-simple-count" class="score-display pitch-val">0</span>
+                </div>
+                <div class="main-pitch-btns">
+                    <button class="m-btn" onclick="updateSimplePitch(-1)">−</button>
+                    <button class="p-btn" onclick="updateSimplePitch(1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-ui-advanced" class="hidden">
+            <div class="adv-header">
+                <div class="adv-stat-box">
+                    <span class="label">TOTAL</span>
+                    <div class="pitch-goo-zone-sm pitch-filter">
+                        <span id="main-adv-total" class="score-display pitch-val-sm">0</span>
+                    </div>
+                </div>
+                <div class="adv-stat-box">
+                    <span class="label">STRIKE %</span>
+                    <span id="main-adv-percent" class="pitch-percent-val">0%</span>
+                </div>
+            </div>
+            <div class="adv-controls-row">
+                <div class="adv-btn-grp">
+                    <button onclick="updateAdvanced('balls', -1)">-B</button>
+                    <button class="p-btn" onclick="updateAdvanced('balls', 1)">+BALL (<span id="main-count-balls">0</span>)</button>
+                </div>
+                <div class="adv-btn-grp">
+                    <button onclick="updateAdvanced('strikes', -1)">-S</button>
+                    <button class="p-btn" onclick="updateAdvanced('strikes', 1)">+STRIKE (<span id="main-count-strikes">0</span>)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass outs-card" onclick="handleOutClick(event)">
+        <span class="label">OUTS</span>
+        <div class="dots">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+    </div>
+    
+    <button class="tools-trigger" onclick="toggleDrawer(true)">TOOLS & HIT LOG</button>
+</div>
+
+<div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)">
+    <div class="drawer-content glass" onclick="event.stopPropagation()">
+        <div class="drawer-handle"></div>
+        <h3>Tools & Hit Log</h3>
+        
+        <div class="tool-section">
+            <label class="label">RECORD PLAY</label>
+            <div class="hit-input-stack">
+                <input type="text" id="log-player" placeholder="Player Name">
+                <div class="hit-select-row">
+                    <select id="log-type" onchange="handleHitTypeChange()">
+                        <option value="" disabled selected>Hit Type</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                        <option value="triple">Triple</option>
+                        <option value="homerun">Home Run</option>
+                        <option value="walk">Walk</option>
+                        <option value="hbp">Hit by Pitch</option>
+                        <option value="strikeout">Strikeout</option>
+                        <option value="popout">Pop Out</option>
+                        <option value="flyout">Fly Out</option>
+                        <option value="groundout">Ground Out</option>
+                        <option value="lineout">Line Out</option>
+                    </select>
+                    <select id="log-location">
+                        <option value="" disabled selected>Location</option>
+                        <optgroup label="Infield">
+                            <option>First Base</option>
+                            <option>Second Base</option>
+                            <option>Third Base</option>
+                            <option>Shortstop</option>
+                            <option>Pitcher</option>
+                            <option>Catcher</option>
+                        </optgroup>
+                        <optgroup label="Outfield">
+                            <option>Left Field</option>
+                            <option>Center Field</option>
+                            <option>Right Field</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option>Out of the Park</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <button class="p-btn" style="width:100%; margin-top:5px" onclick="addHitLog()">Save Play</button>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <label class="label">GAME LOG</label>
+            <div id="hit-log-container" class="log-container">
+                <div class="log-empty">No plays recorded.</div>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <label class="label">EDIT TEAM NAMES</label>
+            <div class="mobile-input-stack">
+                <input type="text" id="edit-away" placeholder="Away Team Name" oninput="updateTeamName('away', this.value)">
+                <input type="text" id="edit-home" placeholder="Home Team Name" oninput="updateTeamName('home', this.value)">
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <label class="label">PITCH COUNTER MODE</label>
+            <div class="mode-selector">
+                <button id="pitch-off" class="mode-btn active" onclick="setPitchMode('OFF')">OFF</button>
+                <button id="pitch-simple" class="mode-btn" onclick="setPitchMode('SIMPLE')">SIMPLE</button>
+                <button id="pitch-advanced" class="mode-btn" onclick="setPitchMode('ADVANCED')">ADVANCED</button>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <button class="danger-btn" onclick="confirmReset()">Reset New Game</button>
+        </div>
+        
+        <button class="close-drawer" onclick="toggleDrawer(false)">Close Menu</button>
+    </div>
+</div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <defs>
+    <filter id="gooey-away">
+      <feGaussianBlur id="blur-away" in="SourceGraphic" stdDeviation="0" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 28 -8" result="gooey" />
+      <feComposite in="SourceGraphic" in2="gooey" operator="atop" />
+    </filter>
+    <filter id="gooey-home">
+      <feGaussianBlur id="blur-home" in="SourceGraphic" stdDeviation="0" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 28 -8" result="gooey" />
+      <feComposite in="SourceGraphic" in2="gooey" operator="atop" />
+    </filter>
+  </defs>
+</svg>
+
+<script src="script.js"></script>
+</body>
+</html>
